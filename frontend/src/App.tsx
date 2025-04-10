@@ -1,7 +1,7 @@
-import CreateForm from './features/Form/CreateForm'
+import FormBuilder from './features/Form/FormBuilder'
 
 function App() {
-  return <CreateForm />
+  return <FormBuilder />
 }
 
 export default App
