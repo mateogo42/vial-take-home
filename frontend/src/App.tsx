@@ -1,7 +1,15 @@
-import FormBuilder from './features/Form/FormBuilder'
+import { Outlet } from 'react-router'
+import Header from '@/components/Header'
 
 function App() {
-  return <FormBuilder />
+  return (
+    <>
+      <Header />
+      <div className="p-10">
+        <Outlet />
+      </div>
+    </>
+  )
 }
 
 export default App

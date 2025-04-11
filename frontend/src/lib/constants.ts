@@ -1,4 +1,4 @@
-import { ALargeSmall, Binary, Calendar, Text } from 'lucide-react'
+import { ALargeSmall, Binary, Text } from 'lucide-react'
 
 export const FIELD_TYPES: { name: string; icon: any; label: string }[] = [
   { name: 'text', icon: ALargeSmall, label: 'Text' },

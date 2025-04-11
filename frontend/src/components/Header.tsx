@@ -1,0 +1,25 @@
+import { Card } from '@/components/ui/card'
+import { Globe, Plus } from 'lucide-react'
+import { NavLink } from 'react-router'
+export default function Header() {
+  return (
+    <Card className="w-full bg-card py-3 px-4 border-0 flex flex-row items-center justify-start rounded-none">
+      <div className="flex justify-start space-x-2">
+        <Globe />
+        <span className="text-md font-bold">Form Builder</span>
+      </div>
+      <ul className="flex items-center text-gray-400 gap-5">
+        <li>
+          <NavLink className="hover:text-white" to="/">
+            Forms
+          </NavLink>
+        </li>
+        <li>
+          <NavLink className="hover:text-white flex gap-1" to="/new">
+            <Plus /> New Form
+          </NavLink>
+        </li>
+      </ul>
+    </Card>
+  )
+}
