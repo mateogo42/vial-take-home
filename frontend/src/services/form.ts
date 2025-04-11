@@ -1,5 +1,5 @@
 import { fieldArrayToObject, fieldObjectToArray } from '@/lib/utils'
-import type { ApiFormResponse, ApiResponse, Form } from '@/types'
+import type { ApiFormResponse, ApiResponse, Form, FormAnswers } from '@/types'
 
 const API_URL = import.meta.env.API_URL
 const FORM_URL = new URL('/form', API_URL)
@@ -45,5 +45,16 @@ export async function updateForm(
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ name, fields: fieldMap }),
   })
+  return resp.ok
+}
+
+export async function recordFormAnswers(id: string, answers: FormAnswers) {
+  const url = new URL(`/form/${id}`, API_URL)
+  const resp = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(answers),
+  })
+
   return resp.ok
 }

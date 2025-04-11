@@ -8,6 +8,10 @@ export type FieldMap = {
   [key: `field-${number}`]: Field
 }
 
+export type FormAnswers = {
+  [key: `field-${number}`]: any
+}
+
 export type ApiFormResponse = {
   id: string
   name: string
