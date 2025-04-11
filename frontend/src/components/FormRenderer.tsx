@@ -1,8 +1,4 @@
 import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
 import {
   Card,
   CardContent,
@@ -10,57 +6,96 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { ApiFormResponse, Field } from '@/types'
-import { useLoaderData } from 'react-router'
+import { Field, Form as FormType } from '@/types'
+import {
+  ControllerRenderProps,
+  FieldValues,
+  SubmitHandler,
+  useForm,
+} from 'react-hook-form'
+import { Form, FormField, FormItem, FormMessage } from '@/components/ui/form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { generateZodSchema } from '@/lib/utils'
+import TextField from './fields/TextField'
+import TextareaField from './fields/TextArea'
+import BooleanField from './fields/BooleanField'
+import DatetimeField from './fields/DatetimeField'
 
-function fieldToInput(field: Field, name: string) {
-  switch (field.type) {
+function fieldToInput(field: ControllerRenderProps, fieldData: Field) {
+  switch (fieldData.type) {
+    case 'email':
     case 'text':
-      return (
-        <>
-          <Label htmlFor={name}>{field.question}</Label>
-          <Input id={name} type="text" required={field.required} />
-        </>
-      )
+      return <TextField {...field} question={fieldData.question} type="text" />
     case 'textarea':
-      return (
-        <>
-          <Label htmlFor={name}>{field.question}</Label>
-          <Textarea id={name} required={field.required} />
-        </>
-      )
+      return <TextareaField {...field} question={fieldData.question} />
     case 'boolean':
       return (
-        <div className="flex space-x-4">
-          <Checkbox id={name} />
-          <Label htmlFor={name} className="text-sm font-medium leading-none">
-            {field.question}
-          </Label>
-        </div>
+        <BooleanField
+          question={fieldData.question}
+          value={field.value}
+          onChange={field.onChange}
+        />
       )
+    case 'datetime':
+      return (
+        <DatetimeField
+          question={fieldData.question}
+          value={field.value}
+          onChange={field.onChange}
+        />
+      )
+    default:
+      return <p>Unkown form type</p>
   }
 }
 
-export default function FormRenderer() {
-  const { form } = useLoaderData<{ form: ApiFormResponse }>()
+export default function FormRenderer({
+  formData,
+  onSubmit,
+}: {
+  formData: FormType
+  onSubmit: SubmitHandler<FieldValues>
+}) {
+  const { id, name, fields } = formData
+  const form = useForm({
+    defaultValues: Object.fromEntries(
+      fields.map((_, index) => [`field-${index + 1}`, ''])
+    ),
+    resolver: zodResolver(generateZodSchema(fields)),
+  })
   return (
-    <Card className="w-[50%] self-center px-10">
+    <Card className="self-center px-10">
       <CardHeader className="text-xl font-bold">
-        <CardTitle>{form.name}</CardTitle>
+        <CardTitle>{name}</CardTitle>
       </CardHeader>
       <CardContent>
-        <form>
-          <div className="grid w-full items-center gap-4">
-            {Object.entries(form.fields).map(([name, field]) => (
-              <div className="flex flex-col space-y-1.5">
-                {fieldToInput(field, name)}
-              </div>
-            ))}
-          </div>
-        </form>
+        <Form {...form}>
+          <form id={`form-${id}`} onSubmit={form.handleSubmit(onSubmit)}>
+            <div className="grid w-full items-center gap-4">
+              {fields.map((fieldData, index) => {
+                const fieldName = `field-${index + 1}`
+                return (
+                  <FormField
+                    key={fieldName}
+                    name={fieldName}
+                    control={form.control}
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col space-y-1.5">
+                        {fieldToInput(field, fieldData)}
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )
+              })}
+            </div>
+          </form>
+        </Form>
       </CardContent>
       <CardFooter className="flex justify-center">
-        <Button type="button">Submit</Button>
+        <Button type="submit" form={`form-${id}`}>
+          Submit
+        </Button>
       </CardFooter>
     </Card>
   )

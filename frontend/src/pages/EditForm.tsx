@@ -1,5 +1,5 @@
 import FormBuilder from '@/components/FormBuilder'
-import FormPreviewer from '@/components/FormPreviewer'
+import FormRenderer from '@/components/FormRenderer'
 import { formSchema } from '@/lib/schemas'
 import { updateForm } from '@/services/form'
 import { Form } from '@/types'
@@ -17,7 +17,7 @@ export default function EditFormPage() {
     },
     resolver: zodResolver(formSchema),
   })
-  const onSubmit = async (data: Form) => {
+  const onSubmitForm = async (data: Form) => {
     if (await updateForm(id, data)) {
       console.log('Succesfully updatedjform')
       return
@@ -26,16 +26,20 @@ export default function EditFormPage() {
     console.log('Failed to update form')
   }
 
+  const onSubmitPreview = async (data: { [key: string]: any }) => {
+    console.log(data)
+  }
+
   const formData = form.watch()
 
   return (
     <div className="flex gap-10 w-full">
       <div className="flex flex-1/2 flex-col items-center">
         <h1 className="text-5xl font-bold mb-10">Create a new form</h1>
-        <FormBuilder form={form} onSubmit={onSubmit} />
+        <FormBuilder form={form} onSubmit={onSubmitForm} />
       </div>
       <div className="flex-1/2">
-        <FormPreviewer formData={formData} />
+        <FormRenderer formData={formData} onSubmit={onSubmitPreview} />
       </div>
     </div>
   )

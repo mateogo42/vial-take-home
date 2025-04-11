@@ -1,15 +1,20 @@
-import { fieldArrayToObject } from '@/lib/utils'
+import { fieldArrayToObject, fieldObjectToArray } from '@/lib/utils'
 import type { ApiFormResponse, ApiResponse, Form } from '@/types'
 
 const API_URL = import.meta.env.API_URL
 const FORM_URL = new URL('/form', API_URL)
 
-export async function getFormById(id: string): Promise<ApiFormResponse> {
+export async function getFormById(id: string): Promise<Form> {
   const url = new URL(`/form/${id}`, API_URL)
   const resp = await fetch(url)
-  const { data } = await resp.json()
+  const { data } = (await resp.json()) as ApiResponse<ApiFormResponse>
+  const form = {
+    id: data.id,
+    name: data.name,
+    fields: fieldObjectToArray(data.fields),
+  }
 
-  return data
+  return form
 }
 
 export async function getForms(): Promise<Omit<Form, 'fields'>[]> {

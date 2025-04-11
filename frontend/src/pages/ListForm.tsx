@@ -1,7 +1,7 @@
 import { buttonVariants } from '@/components/ui/button'
 import { Card, CardFooter, CardHeader } from '@/components/ui/card'
 import { Form } from '@/types'
-import { ExternalLink, Pencil } from 'lucide-react'
+import { Eye, Pencil } from 'lucide-react'
 import { NavLink, useLoaderData } from 'react-router'
 
 export default function ListFormPage() {
@@ -16,8 +16,8 @@ export default function ListFormPage() {
               className={buttonVariants({ variant: 'link' })}
               to={`/form/${form.id}`}
             >
-              <ExternalLink />
-              Open
+              <Eye />
+              View
             </NavLink>
             <NavLink
               className={buttonVariants({ variant: 'link' })}

@@ -6,9 +6,9 @@ import CreateFormPage from '@/pages/CreateForm'
 import ListFormPage from '@/pages/ListForm'
 import App from '@/App.tsx'
 import { getFormById, getForms } from '@/services/form.ts'
-import FormRenderer from '@/components/FormRenderer.tsx'
 import EditFormPage from './pages/EditForm'
 import { fieldObjectToArray } from './lib/utils'
+import ViewFormPage from './pages/ViewForm'
 
 const router = createBrowserRouter([
   {
@@ -22,14 +22,14 @@ const router = createBrowserRouter([
         },
         Component: ListFormPage,
       },
-      { path: 'new', Component: CreateFormPage },
+      { path: '/new', Component: CreateFormPage },
       {
         path: '/form/:formId',
         loader: async ({ params }) => {
           const { formId } = params
           if (formId) return { form: await getFormById(formId) }
         },
-        Component: FormRenderer,
+        Component: ViewFormPage,
       },
       {
         path: '/form/edit/:formId',
@@ -39,7 +39,7 @@ const router = createBrowserRouter([
           if (formId) {
             const { id, name, fields } = await getFormById(formId)
             return {
-              form: { id, name, fields: fieldObjectToArray(fields) || [] },
+              form: { id, name, fields },
             }
           }
         },

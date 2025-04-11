@@ -5,6 +5,10 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
+  server: {
+    port: 3000,
+    host: '0.0.0.0',
+  },
   envPrefix: 'API',
   plugins: [react(), tailwindcss()],
   resolve: {
