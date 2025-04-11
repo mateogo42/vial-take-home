@@ -4,15 +4,47 @@ import './index.css'
 import { createBrowserRouter, RouterProvider } from 'react-router'
 import CreateFormPage from '@/pages/CreateForm'
 import ListFormPage from '@/pages/ListForm'
-import App from './App.tsx'
+import App from '@/App.tsx'
+import { getFormById, getForms } from '@/services/form.ts'
+import FormRenderer from '@/components/FormRenderer.tsx'
+import EditFormPage from './pages/EditForm'
+import { fieldObjectToArray } from './lib/utils'
 
 const router = createBrowserRouter([
   {
     path: '/',
     Component: App,
     children: [
-      { index: true, Component: ListFormPage },
+      {
+        index: true,
+        loader: async () => {
+          return { forms: await getForms() }
+        },
+        Component: ListFormPage,
+      },
       { path: 'new', Component: CreateFormPage },
+      {
+        path: '/form/:formId',
+        loader: async ({ params }) => {
+          const { formId } = params
+          if (formId) return { form: await getFormById(formId) }
+        },
+        Component: FormRenderer,
+      },
+      {
+        path: '/form/edit/:formId',
+        loader: async ({ params }) => {
+          const { formId } = params
+          console.log(formId)
+          if (formId) {
+            const { id, name, fields } = await getFormById(formId)
+            return {
+              form: { id, name, fields: fieldObjectToArray(fields) || [] },
+            }
+          }
+        },
+        Component: EditFormPage,
+      },
     ],
   },
 ])

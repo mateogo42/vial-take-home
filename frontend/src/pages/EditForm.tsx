@@ -1,27 +1,29 @@
 import FormBuilder from '@/components/FormBuilder'
 import FormPreviewer from '@/components/FormPreviewer'
 import { formSchema } from '@/lib/schemas'
-import { createForm } from '@/services/form'
+import { updateForm } from '@/services/form'
 import { Form } from '@/types'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
+import { useLoaderData } from 'react-router'
 
-export default function CreateFormPage() {
-  const form = useForm<z.infer<typeof formSchema>>({
+export default function EditFormPage() {
+  const { form: existingForm } = useLoaderData<{ form: Form }>()
+  const { id, name, fields } = existingForm
+  const form = useForm<Form>({
     defaultValues: {
-      name: '',
-      fields: [],
+      name,
+      fields,
     },
     resolver: zodResolver(formSchema),
   })
   const onSubmit = async (data: Form) => {
-    if (await createForm(data)) {
-      console.log('Succesfully created form')
+    if (await updateForm(id, data)) {
+      console.log('Succesfully updatedjform')
       return
     }
 
-    console.log('Failed to create form')
+    console.log('Failed to update form')
   }
 
   const formData = form.watch()

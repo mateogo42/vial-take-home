@@ -30,11 +30,13 @@ async function formRoutes(app: FastifyInstance) {
     },
   })
 
-  app.get<{ Reply: Form[] }>('/', {
+  app.get<{ Reply: Omit<Form, 'fields'>[] }>('/', {
     async handler(req, reply) {
       log.debug('get all forms')
       try {
-        const forms = await prisma.form.findMany()
+        const forms = await prisma.form.findMany({
+          select: { id: true, name: true },
+        })
         reply.send(forms)
       } catch (err: any) {
         log.error({ err }, err.message)
@@ -54,6 +56,28 @@ async function formRoutes(app: FastifyInstance) {
       } catch (err: any) {
         log.error({ err }, err.message)
         throw new ApiError('failed to create form', 400)
+      }
+    },
+  })
+
+  app.put<{ Params: IEntityId; Body: Form; Reply: Form }>('/:id', {
+    async handler(req, reply) {
+      const { id } = req.params
+      const { name, fields } = req.body
+      try {
+        const form = await prisma.form.update({
+          where: {
+            id: id,
+          },
+          data: {
+            fields: fields || Prisma.JsonNull,
+            name,
+          },
+        })
+        reply.send(form)
+      } catch (err: any) {
+        log.error({ err }, err.message)
+        throw new ApiError('failed to update form', 400)
       }
     },
   })

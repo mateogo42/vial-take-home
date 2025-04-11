@@ -4,12 +4,14 @@ import { z } from 'zod'
 export type Field = z.infer<typeof fieldSchema>
 export type Form = z.infer<typeof formSchema>
 
+export type FieldMap = {
+  [key: `field-${number}`]: Field
+}
+
 export type ApiFormResponse = {
   id: string
   name: string
-  fields: {
-    [key: string]: Field
-  }
+  fields: FieldMap
 }
 
 export type ApiResponse<T> = {

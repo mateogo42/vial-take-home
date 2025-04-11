@@ -10,30 +10,32 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { ApiFormResponse, Field } from '@/types'
-import { useLoaderData } from 'react-router'
+import { Field, Form } from '@/types'
 
-function fieldToInput(field: Field, name: string) {
+function fieldToInput(field: Field, index: number) {
   switch (field.type) {
     case 'text':
       return (
         <>
-          <Label htmlFor={name}>{field.question}</Label>
-          <Input id={name} type="text" required={field.required} />
+          <Label htmlFor={`field-${index}`}>{field.question}</Label>
+          <Input id={`field-${index}`} type="text" required={field.required} />
         </>
       )
     case 'textarea':
       return (
         <>
-          <Label htmlFor={name}>{field.question}</Label>
-          <Textarea id={name} required={field.required} />
+          <Label htmlFor={`field-${index}`}>{field.question}</Label>
+          <Textarea id={`field-${index}`} required={field.required} />
         </>
       )
     case 'boolean':
       return (
         <div className="flex space-x-4">
-          <Checkbox id={name} />
-          <Label htmlFor={name} className="text-sm font-medium leading-none">
+          <Checkbox id={`field-${index}`} />
+          <Label
+            htmlFor={`field-${index}`}
+            className="text-sm font-medium leading-none"
+          >
             {field.question}
           </Label>
         </div>
@@ -41,19 +43,18 @@ function fieldToInput(field: Field, name: string) {
   }
 }
 
-export default function FormRenderer() {
-  const { form } = useLoaderData<{ form: ApiFormResponse }>()
+export default function FormPreviewer({ formData }: { formData: Form }) {
   return (
-    <Card className="w-[50%] self-center px-10">
+    <Card className="w-full px-10">
       <CardHeader className="text-xl font-bold">
-        <CardTitle>{form.name}</CardTitle>
+        <CardTitle>{formData.name}</CardTitle>
       </CardHeader>
       <CardContent>
         <form>
           <div className="grid w-full items-center gap-4">
-            {Object.entries(form.fields).map(([name, field]) => (
-              <div className="flex flex-col space-y-1.5">
-                {fieldToInput(field, name)}
+            {formData.fields.map((field, index) => (
+              <div key={index} className="flex flex-col space-y-1.5">
+                {fieldToInput(field, index)}
               </div>
             ))}
           </div>

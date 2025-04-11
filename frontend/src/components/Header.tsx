@@ -1,5 +1,5 @@
 import { Card } from '@/components/ui/card'
-import { Globe, Plus } from 'lucide-react'
+import { FileText, Globe, Plus } from 'lucide-react'
 import { NavLink } from 'react-router'
 export default function Header() {
   return (
@@ -10,13 +10,13 @@ export default function Header() {
       </div>
       <ul className="flex items-center text-gray-400 gap-5">
         <li>
-          <NavLink className="hover:text-white" to="/">
-            Forms
+          <NavLink className="hover:text-white flex gap-1" to="/new">
+            <Plus /> New Form
           </NavLink>
         </li>
         <li>
-          <NavLink className="hover:text-white flex gap-1" to="/new">
-            <Plus /> New Form
+          <NavLink className="hover:text-white flex gap-1" to="/">
+            <FileText /> Forms
           </NavLink>
         </li>
       </ul>

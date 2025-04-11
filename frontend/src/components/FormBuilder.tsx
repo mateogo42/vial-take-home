@@ -6,7 +6,7 @@ import {
   SelectContent,
 } from '@/components/ui/select'
 import { Checkbox } from '@/components/ui/checkbox'
-import { FIELD_TYPES } from '@/lib/constants'
+import { FIELD_TYPES } from '@/constants/form'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useFieldArray, UseFormReturn } from 'react-hook-form'
@@ -18,30 +18,22 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { z } from 'zod'
-import { formSchema } from '@/lib/schemas'
-import { createForm } from '@/services/form'
 import { Trash2 } from 'lucide-react'
 import { Label } from './ui/label'
+import type { Form as FormType } from '@/types'
+import React from 'react'
 
 export default function FormBuilder({
   form,
+  onSubmit,
 }: {
-  form: UseFormReturn<z.infer<typeof formSchema>>
+  form: UseFormReturn<FormType>
+  onSubmit: (data: FormType) => Promise<void>
 }) {
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: 'fields',
   })
-
-  const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    if (await createForm(data)) {
-      console.log('Succesfully created form')
-      return
-    }
-
-    console.log('Failed to create form')
-  }
 
   return (
     <div className={`w-full flex flex-col items-stretch`}>
@@ -68,7 +60,7 @@ export default function FormBuilder({
             <div></div>
 
             {fields.map((_, index) => (
-              <>
+              <React.Fragment key={index}>
                 <FormField
                   control={form.control}
                   name={`fields.${index}.type`}
@@ -128,7 +120,7 @@ export default function FormBuilder({
                 >
                   <Trash2 />
                 </Button>
-              </>
+              </React.Fragment>
             ))}
           </div>
           <Button
@@ -141,7 +133,9 @@ export default function FormBuilder({
           >
             + Add Field
           </Button>
-          <Button type="submit">Save</Button>
+          <Button className="cursor-pointer" type="submit">
+            Save
+          </Button>
         </form>
       </Form>
     </div>

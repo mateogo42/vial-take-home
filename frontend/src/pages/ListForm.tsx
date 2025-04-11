@@ -1,29 +1,31 @@
-import { Button } from '@/components/ui/button'
+import { buttonVariants } from '@/components/ui/button'
 import { Card, CardFooter, CardHeader } from '@/components/ui/card'
-import { getForms } from '@/services/form'
 import { Form } from '@/types'
 import { ExternalLink, Pencil } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { NavLink, useLoaderData } from 'react-router'
 
 export default function ListFormPage() {
-  const [forms, setForms] = useState<Form[]>([])
-  useEffect(() => {
-    getForms().then(forms => setForms(forms))
-  })
+  const { forms } = useLoaderData<{ forms: Omit<Form, 'fields'>[] }>()
   return (
-    <div className="grid grid-cols-3 gap-10">
-      {forms.map(form => (
-        <Card>
-          <CardHeader className="text-center">{form.name}</CardHeader>
+    <div className="grid grid-cols-3 gap-10 w-full">
+      {forms.map((form, index) => (
+        <Card key={index}>
+          <CardHeader className="text-center font-bold">{form.name}</CardHeader>
           <CardFooter className="flex justify-around">
-            <Button className="w-[30%]">
+            <NavLink
+              className={buttonVariants({ variant: 'link' })}
+              to={`/form/${form.id}`}
+            >
               <ExternalLink />
               Open
-            </Button>
-            <Button className="w-[30%]">
+            </NavLink>
+            <NavLink
+              className={buttonVariants({ variant: 'link' })}
+              to={`/form/edit/${form.id}`}
+            >
               <Pencil />
               Edit
-            </Button>
+            </NavLink>
           </CardFooter>
         </Card>
       ))}
