@@ -1,4 +1,4 @@
-version: "4.12.0"
+version: '4.12.0'
 
 services:
   database:
@@ -12,7 +12,7 @@ services:
       - 5432:5432
   nodeserver:
     container_name: vial-backend-b-api
-    image: node:18.15.0
+    image: node:18.15.0-backend
     build:
       context: .
       dockerfile: Dockerfile.local
@@ -26,3 +26,18 @@ services:
       - database
     ports:
       - 8080:8080
+  frontend:
+    platform: linux/amd64
+    container_name: vial-frontend-b
+    image: node:18.15.0-frontend
+    build:
+      context: ./frontend
+      dockerfile: ../Dockerfile.frontend.local
+    command: bash -c "cd ./frontend; npm run dev"
+    volumes:
+      - .:/usr/app/
+      - /usr/app/node_modules
+    env_file:
+      - ./frontend/.env
+    ports:
+      - 3000:3000
