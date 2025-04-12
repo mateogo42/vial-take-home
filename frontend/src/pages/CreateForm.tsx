@@ -10,7 +10,7 @@ import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router'
 
 export default function CreateFormPage() {
-  const [err, setErr] = useState<boolean | undefined>(undefined)
+  const [err, setErr] = useState<boolean>(false)
   const navigate = useNavigate()
   const form = useForm<FormWithoutID>({
     defaultValues: {

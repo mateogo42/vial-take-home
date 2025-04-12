@@ -115,6 +115,14 @@
   [role='button']:not([disabled]) {
     cursor: pointer;
   }
+  .rdp-vhidden,
+  [aria-hidden='true'] {
+    @apply hidden;
+  }
+  .rdp-caption_dropdowns {
+    display: flex;
+    justify-content: space-around;
+  }
   * {
     @apply border-border outline-ring/50;
   }

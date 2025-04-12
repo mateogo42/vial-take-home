@@ -9,12 +9,14 @@ export default function FormAnswersPage() {
   const { records } = useLoaderData<{ records: SourceRecord[] }>()
   return (
     <WithBackButton title="forms" to="/">
-      <Accordion collapsible className="space-y-5" type="single">
+      <Accordion className="space-y-5" type="multiple">
         {records.map(({ id, sourceData }) => (
           <AccordionItem key={id} value={id}>
             <Card>
               <CardContent>
-                <AccordionTrigger className="text-lg">{id}</AccordionTrigger>
+                <AccordionTrigger className="text-lg">
+                  Record ID: {id}
+                </AccordionTrigger>
                 <AccordionContent>
                   {sourceData.map(({ question, answer }) => (
                     <>

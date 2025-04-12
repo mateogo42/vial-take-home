@@ -12,7 +12,7 @@ import { useForm } from 'react-hook-form'
 import { useLoaderData, useNavigate } from 'react-router'
 
 export default function EditFormPage() {
-  const [err, setErr] = useState<boolean | undefined>(undefined)
+  const [err, setErr] = useState<boolean>(false)
   const navigate = useNavigate()
   const { form: existingForm } = useLoaderData<{ form: Form }>()
   const { id, name, fields } = existingForm
@@ -24,7 +24,8 @@ export default function EditFormPage() {
     resolver: zodResolver(formWithoutIdSchema),
   })
   const onSubmitForm = async (data: FormWithoutID) => {
-    if (!(await updateForm(id, data))) {
+    const ok = await updateForm(id, data)
+    if (!ok) {
       setErr(true)
       return
     }
@@ -45,7 +46,7 @@ export default function EditFormPage() {
           <h1 className="text-5xl font-bold mb-10">Edit form</h1>
           <FormBuilder form={form} onSubmit={onSubmitForm} />
           {err ? (
-            <ErrorAlert message="There was a problem creating your form" />
+            <ErrorAlert message="There was a problem saving your form" />
           ) : (
             ''
           )}

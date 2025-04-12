@@ -1,6 +1,6 @@
 import { FastifyInstance } from 'fastify'
 
-import { Form, Prisma, SourceRecord } from '@prisma/client'
+import { Form, SourceRecord } from '@prisma/client'
 
 import prisma from '../db/db_client'
 import { serializer } from './middleware/pre_serializer'
@@ -79,10 +79,13 @@ async function formRoutes(app: FastifyInstance) {
     async handler(req, reply) {
       const { fields, name } = req.body
       try {
-        const form = await prisma.form.create({
-          data: { fields: fields || Prisma.JsonNull, name },
-        })
-        reply.send({ id: form.id })
+        if (fields) {
+          const form = await prisma.form.create({
+            data: { fields: fields, name },
+          })
+          reply.send({ id: form.id })
+        }
+        throw new Error('Empty fields are not allowed')
       } catch (err: any) {
         log.error({ err }, err.message)
         throw new ApiError('failed to create form', 400)
@@ -95,12 +98,15 @@ async function formRoutes(app: FastifyInstance) {
       const { id } = req.params
       const { name, fields } = req.body
       try {
+        if (!fields) {
+          throw new Error('Empty fields are not allowed')
+        }
         const form = await prisma.form.update({
           where: {
             id: id,
           },
           data: {
-            fields: fields || Prisma.JsonNull,
+            fields: fields,
             name,
           },
         })
