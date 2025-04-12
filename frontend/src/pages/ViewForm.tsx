@@ -17,7 +17,7 @@ export default function ViewFormPage() {
   return (
     <WithBackButton title="forms" to="/">
       <div className="width-[50%]">
-        <FormRenderer formData={form} onSubmit={onSubmit} />
+        <FormRenderer id={form.id} formData={form} onSubmit={onSubmit} />
       </div>
     </WithBackButton>
   )

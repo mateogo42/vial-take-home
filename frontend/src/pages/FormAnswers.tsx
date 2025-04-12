@@ -7,7 +7,6 @@ import { useLoaderData } from 'react-router'
 
 export default function FormAnswersPage() {
   const { records } = useLoaderData<{ records: SourceRecord[] }>()
-  console.log(records)
   return (
     <WithBackButton title="forms" to="/">
       <Accordion collapsible className="space-y-5" type="single">

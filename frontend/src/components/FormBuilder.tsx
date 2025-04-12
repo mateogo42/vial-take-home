@@ -20,20 +20,21 @@ import {
 } from '@/components/ui/form'
 import { Trash2 } from 'lucide-react'
 import { Label } from './ui/label'
-import type { Form as FormType } from '@/types'
+import type { FormWithoutID } from '@/types'
 import React from 'react'
 
 export default function FormBuilder({
   form,
   onSubmit,
 }: {
-  form: UseFormReturn<FormType>
-  onSubmit: (data: FormType) => Promise<void>
+  form: UseFormReturn<FormWithoutID>
+  onSubmit: (data: FormWithoutID) => Promise<void>
 }) {
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: 'fields',
   })
+  const errors = form.formState.errors
 
   return (
     <div className={`w-full flex flex-col items-stretch`}>
@@ -52,7 +53,9 @@ export default function FormBuilder({
               </FormItem>
             )}
           />
-          <h1 className="text-xl">Fields</h1>
+          <h1 className={`text-xl ${errors.fields ? 'text-red-400' : ''}`}>
+            Fields
+          </h1>
           <div className="grid grid-cols-[2fr_4fr_1fr_1fr] gap-5 place-items-center">
             <Label className="text-md">Type</Label>
             <Label className="text-md">Question</Label>
@@ -123,6 +126,7 @@ export default function FormBuilder({
               </React.Fragment>
             ))}
           </div>
+          <div className="text-sm text-red-400">{errors.fields?.message}</div>
           <Button
             className="block"
             type="button"

@@ -33,20 +33,24 @@ export async function getForms(): Promise<Omit<Form, 'fields'>[]> {
 export async function createForm({
   name,
   fields,
-}: FormWithoutID): Promise<boolean> {
+}: FormWithoutID): Promise<string | undefined> {
   const fieldMap = fieldArrayToObject(fields)
-  const resp = await fetch(FORM_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name, fields: fieldMap }),
-  })
-
-  return resp.ok
+  try {
+    const resp = await fetch(FORM_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, fields: fieldMap }),
+    })
+    const { data } = (await resp.json()) as { data: { id: string } }
+    return data.id
+  } catch {
+    return undefined
+  }
 }
 
 export async function updateForm(
   id: string,
-  { name, fields }: Form
+  { name, fields }: FormWithoutID
 ): Promise<boolean> {
   const fieldMap = fieldArrayToObject(fields)
   const url = new URL(`/form/${id}`, API_URL)

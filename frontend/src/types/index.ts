@@ -1,9 +1,9 @@
-import { formSchema, fieldSchema } from '@/lib/schemas'
+import { formSchema, fieldSchema, formWithoutIdSchema } from '@/lib/schemas'
 import { z } from 'zod'
 
 export type Field = z.infer<typeof fieldSchema>
 export type Form = z.infer<typeof formSchema>
-export type FormWithoutID = Omit<Form, 'id'>
+export type FormWithoutID = z.infer<typeof formWithoutIdSchema>
 
 export type FieldMap = {
   [key: `field-${number}`]: Field

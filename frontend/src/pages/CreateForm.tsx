@@ -1,27 +1,31 @@
+import ErrorAlert from '@/components/ErrorAlert'
 import FormBuilder from '@/components/FormBuilder'
 import FormRenderer from '@/components/FormRenderer'
-import { formSchema } from '@/lib/schemas'
+import { formWithoutIdSchema } from '@/lib/schemas'
 import { createForm } from '@/services/form'
 import { FormWithoutID } from '@/types'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
+import { useNavigate } from 'react-router'
 
 export default function CreateFormPage() {
-  const form = useForm<z.infer<typeof formSchema>>({
+  const [err, setErr] = useState<boolean | undefined>(undefined)
+  const navigate = useNavigate()
+  const form = useForm<FormWithoutID>({
     defaultValues: {
       name: '',
       fields: [],
     },
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(formWithoutIdSchema),
   })
   const onSubmitForm = async (data: FormWithoutID) => {
-    if (await createForm(data)) {
-      console.log('Succesfully created form')
+    const id = await createForm(data)
+    if (!id) {
+      setErr(true)
       return
     }
-
-    console.log('Failed to create form')
+    await navigate(`/form/${id}`)
   }
 
   const onSubmitPreview = async (data: { [key: string]: any }) => {
@@ -35,9 +39,18 @@ export default function CreateFormPage() {
       <div className="flex flex-1/2 flex-col items-center">
         <h1 className="text-5xl font-bold mb-10">Create a new form</h1>
         <FormBuilder form={form} onSubmit={onSubmitForm} />
+        {err ? (
+          <ErrorAlert message="There was a problem creating your form" />
+        ) : (
+          ''
+        )}
       </div>
       <div className="flex-1/2">
-        <FormRenderer formData={formData} onSubmit={onSubmitPreview} />
+        <FormRenderer
+          id="temp"
+          formData={formData}
+          onSubmit={onSubmitPreview}
+        />
       </div>
     </div>
   )

@@ -13,5 +13,9 @@ export const fieldSchema = z.object({
 export const formSchema = z.object({
   id: z.string(),
   name: z.string().min(1, { message: "Name can't be empty" }),
-  fields: z.array(fieldSchema),
+  fields: z
+    .array(fieldSchema)
+    .min(1, { message: 'Must specify at least one field' }),
 })
+
+export const formWithoutIdSchema = formSchema.omit({ id: true })

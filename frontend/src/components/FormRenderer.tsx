@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { Field, Form as FormType } from '@/types'
+import { Field, FormWithoutID } from '@/types'
 import {
   ControllerRenderProps,
   FieldValues,
@@ -50,13 +50,15 @@ function fieldToInput(field: ControllerRenderProps, fieldData: Field) {
 }
 
 export default function FormRenderer({
+  id,
   formData,
   onSubmit,
 }: {
-  formData: FormType
+  id: string
+  formData: FormWithoutID
   onSubmit: SubmitHandler<FieldValues>
 }) {
-  const { id, name, fields } = formData
+  const { name, fields } = formData
   const form = useForm({
     defaultValues: Object.fromEntries(
       fields.map((_, index) => [`field-${index + 1}`, ''])
