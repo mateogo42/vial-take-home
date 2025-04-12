@@ -1,7 +1,7 @@
 import { buttonVariants } from '@/components/ui/button'
 import { Card, CardFooter, CardHeader } from '@/components/ui/card'
 import { Form } from '@/types'
-import { Eye, Pencil } from 'lucide-react'
+import { Eye, ListCheck, Pencil } from 'lucide-react'
 import { NavLink, useLoaderData } from 'react-router'
 
 export default function ListFormPage() {
@@ -21,10 +21,17 @@ export default function ListFormPage() {
             </NavLink>
             <NavLink
               className={buttonVariants({ variant: 'link' })}
-              to={`/form/edit/${form.id}`}
+              to={`/form/${form.id}/edit`}
             >
               <Pencil />
               Edit
+            </NavLink>
+            <NavLink
+              className={buttonVariants({ variant: 'link' })}
+              to={`/form/${form.id}/answers`}
+            >
+              <ListCheck />
+              Answers
             </NavLink>
           </CardFooter>
         </Card>

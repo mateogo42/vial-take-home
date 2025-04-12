@@ -5,10 +5,10 @@ import { createBrowserRouter, RouterProvider } from 'react-router'
 import CreateFormPage from '@/pages/CreateForm'
 import ListFormPage from '@/pages/ListForm'
 import App from '@/App.tsx'
-import { getFormById, getForms } from '@/services/form.ts'
+import { getFormAnswers, getFormById, getForms } from '@/services/form.ts'
 import EditFormPage from './pages/EditForm'
-import { fieldObjectToArray } from './lib/utils'
 import ViewFormPage from './pages/ViewForm'
+import FormAnswersPage from './pages/FormAnswers'
 
 const router = createBrowserRouter([
   {
@@ -32,10 +32,9 @@ const router = createBrowserRouter([
         Component: ViewFormPage,
       },
       {
-        path: '/form/edit/:formId',
+        path: '/form/:formId/edit',
         loader: async ({ params }) => {
           const { formId } = params
-          console.log(formId)
           if (formId) {
             const { id, name, fields } = await getFormById(formId)
             return {
@@ -44,6 +43,19 @@ const router = createBrowserRouter([
           }
         },
         Component: EditFormPage,
+      },
+      {
+        path: '/form/:formId/answers',
+        loader: async ({ params }) => {
+          const { formId } = params
+          if (formId) {
+            const records = await getFormAnswers(formId)
+            return {
+              records,
+            }
+          }
+        },
+        Component: FormAnswersPage,
       },
     ],
   },

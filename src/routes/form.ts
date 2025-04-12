@@ -111,6 +111,31 @@ async function formRoutes(app: FastifyInstance) {
       }
     },
   })
+
+  app.get<{
+    Params: IEntityId
+    Reply: Omit<SourceRecord, 'formId'>[]
+  }>('/:id/source-records', {
+    async handler(req, reply) {
+      const { id } = req.params
+      const sourceRecords = await prisma.sourceRecord.findMany({
+        where: {
+          formId: id,
+        },
+        select: {
+          id: true,
+          sourceData: {
+            select: {
+              id: true,
+              question: true,
+              answer: true,
+            },
+          },
+        },
+      })
+      reply.send(sourceRecords)
+    },
+  })
 }
 
 export default formRoutes

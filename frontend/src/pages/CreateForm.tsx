@@ -2,7 +2,7 @@ import FormBuilder from '@/components/FormBuilder'
 import FormRenderer from '@/components/FormRenderer'
 import { formSchema } from '@/lib/schemas'
 import { createForm } from '@/services/form'
-import { Form } from '@/types'
+import { FormWithoutID } from '@/types'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -15,7 +15,7 @@ export default function CreateFormPage() {
     },
     resolver: zodResolver(formSchema),
   })
-  const onSubmitForm = async (data: Form) => {
+  const onSubmitForm = async (data: FormWithoutID) => {
     if (await createForm(data)) {
       console.log('Succesfully created form')
       return

@@ -1,5 +1,12 @@
 import { fieldArrayToObject, fieldObjectToArray } from '@/lib/utils'
-import type { ApiFormResponse, ApiResponse, Form, FormAnswers } from '@/types'
+import type {
+  ApiFormResponse,
+  ApiResponse,
+  Form,
+  FormAnswers,
+  FormWithoutID,
+  SourceRecord,
+} from '@/types'
 
 const API_URL = import.meta.env.API_URL
 const FORM_URL = new URL('/form', API_URL)
@@ -23,7 +30,10 @@ export async function getForms(): Promise<Omit<Form, 'fields'>[]> {
   return data
 }
 
-export async function createForm({ name, fields }: Form): Promise<boolean> {
+export async function createForm({
+  name,
+  fields,
+}: FormWithoutID): Promise<boolean> {
   const fieldMap = fieldArrayToObject(fields)
   const resp = await fetch(FORM_URL, {
     method: 'POST',
@@ -57,4 +67,12 @@ export async function recordFormAnswers(id: string, answers: FormAnswers) {
   })
 
   return resp.ok
+}
+
+export async function getFormAnswers(id: string) {
+  const url = new URL(`/form/${id}/source-records`, API_URL)
+  const resp = await fetch(url)
+  const { data } = (await resp.json()) as ApiResponse<SourceRecord[]>
+
+  return data
 }

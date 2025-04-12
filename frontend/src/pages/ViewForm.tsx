@@ -1,4 +1,5 @@
 import FormRenderer from '@/components/FormRenderer'
+import WithBackButton from '@/components/withBackButton'
 import { recordFormAnswers } from '@/services/form'
 import { Form, FormAnswers } from '@/types'
 import { useLoaderData } from 'react-router'
@@ -13,5 +14,11 @@ export default function ViewFormPage() {
 
     console.log('Failed to record answers')
   }
-  return <FormRenderer formData={form} onSubmit={onSubmit} />
+  return (
+    <WithBackButton title="forms" to="/">
+      <div className="width-[50%]">
+        <FormRenderer formData={form} onSubmit={onSubmit} />
+      </div>
+    </WithBackButton>
+  )
 }

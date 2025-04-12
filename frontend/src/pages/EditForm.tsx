@@ -1,5 +1,7 @@
 import FormBuilder from '@/components/FormBuilder'
 import FormRenderer from '@/components/FormRenderer'
+
+import WithBackButton from '@/components/withBackButton'
 import { formSchema } from '@/lib/schemas'
 import { updateForm } from '@/services/form'
 import { Form } from '@/types'
@@ -33,14 +35,16 @@ export default function EditFormPage() {
   const formData = form.watch()
 
   return (
-    <div className="flex gap-10 w-full">
-      <div className="flex flex-1/2 flex-col items-center">
-        <h1 className="text-5xl font-bold mb-10">Create a new form</h1>
-        <FormBuilder form={form} onSubmit={onSubmitForm} />
+    <WithBackButton title="forms" to="/">
+      <div className="flex gap-10 w-full">
+        <div className="flex flex-1/2 flex-col items-center">
+          <h1 className="text-5xl font-bold mb-10">Edit form</h1>
+          <FormBuilder form={form} onSubmit={onSubmitForm} />
+        </div>
+        <div className="flex-1/2">
+          <FormRenderer formData={formData} onSubmit={onSubmitPreview} />
+        </div>
       </div>
-      <div className="flex-1/2">
-        <FormRenderer formData={formData} onSubmit={onSubmitPreview} />
-      </div>
-    </div>
+    </WithBackButton>
   )
 }
