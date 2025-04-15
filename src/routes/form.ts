@@ -85,7 +85,7 @@ async function formRoutes(app: FastifyInstance) {
             sourceData: {
               create: Object.entries(body).map(([name, value]) => ({
                 question: form.fields?.[name].question,
-                answer: value,
+                answer: value.toString(),
               })),
             },
           },

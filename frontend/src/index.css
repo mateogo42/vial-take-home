@@ -116,7 +116,7 @@
     cursor: pointer;
   }
   .rdp-vhidden,
-  [aria-hidden='true'] {
+  .rdp-caption_dropdowns [aria-hidden='true'] {
     @apply hidden;
   }
   .rdp-caption_dropdowns {

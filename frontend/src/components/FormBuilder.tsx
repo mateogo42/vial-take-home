@@ -126,7 +126,6 @@ export default function FormBuilder({
               </React.Fragment>
             ))}
           </div>
-          <div className="text-sm text-red-400">{errors.fields?.message}</div>
           <Button
             className="block"
             type="button"
@@ -137,9 +136,8 @@ export default function FormBuilder({
           >
             + Add Field
           </Button>
-          <Button className="cursor-pointer" type="submit">
-            Save
-          </Button>
+          <div className="text-sm text-red-400">{errors.fields?.message}</div>
+          <Button type="submit">Save</Button>
         </form>
       </Form>
     </div>

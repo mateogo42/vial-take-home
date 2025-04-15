@@ -25,7 +25,13 @@ function fieldToInput(field: ControllerRenderProps, fieldData: Field) {
   switch (fieldData.type) {
     case 'email':
     case 'text':
-      return <TextField {...field} question={fieldData.question} type="text" />
+      return (
+        <TextField
+          {...field}
+          question={fieldData.question}
+          type={fieldData.type}
+        />
+      )
     case 'textarea':
       return <TextareaField {...field} question={fieldData.question} />
     case 'boolean':
