@@ -1,11 +1,15 @@
 import { FastifyInstance } from 'fastify'
 
-import { Form, SourceRecord } from '@prisma/client'
+import type {
+  Form as IForm,
+  SourceRecord as ISourceRecord,
+} from '@prisma/client'
 
 import prisma from '../db/db_client'
 import { serializer } from './middleware/pre_serializer'
-import { IEntityId } from './schemas/common'
+import { Form, EntityId, IEntityId, SourceRecord } from './schemas/common'
 import { ApiError } from '../errors'
+import { Type } from '@sinclair/typebox'
 
 async function formRoutes(app: FastifyInstance) {
   app.setReplySerializer(serializer)
@@ -14,8 +18,23 @@ async function formRoutes(app: FastifyInstance) {
 
   app.get<{
     Params: IEntityId
-    Reply: Form
+    Reply: IForm
   }>('/:id', {
+    schema: {
+      description: 'Get form data by id',
+      tags: ['form'],
+      params: EntityId,
+      response: {
+        200: {
+          type: 'object',
+          properties: {
+            statusCode: { type: 'number' },
+            message: { type: 'string' },
+            data: Form,
+          },
+        },
+      },
+    },
     async handler(req, reply) {
       const { params } = req
       const { id } = params
@@ -33,8 +52,27 @@ async function formRoutes(app: FastifyInstance) {
   app.post<{
     Params: IEntityId
     Body: { [key: string]: any }
-    Reply: SourceRecord
+    Reply: ISourceRecord
   }>('/:id', {
+    schema: {
+      description: 'Save a new source record for a given form',
+      tags: ['form'],
+      params: EntityId,
+      body: {
+        type: 'object',
+        examples: [{ 'field-0': 'John', 'field-1': 'Doe' }],
+      },
+      response: {
+        200: {
+          type: 'object',
+          properties: {
+            statusCode: { type: 'number' },
+            message: { type: 'string' },
+            data: EntityId,
+          },
+        },
+      },
+    },
     async handler(req, reply) {
       const { params, body } = req
       const { id } = params
@@ -60,9 +98,27 @@ async function formRoutes(app: FastifyInstance) {
     },
   })
 
-  app.get<{ Reply: Omit<Form, 'fields'>[] }>('/', {
+  app.get<{ Reply: Omit<IForm, 'fields'>[] }>('/', {
+    schema: {
+      description: 'List all forms',
+      tags: ['form'],
+      response: {
+        200: {
+          type: 'object',
+          properties: {
+            statusCode: { type: 'number' },
+            message: { type: 'string' },
+            data: {
+              type: 'array',
+              items: Type.Omit(Form, ['fields']),
+            },
+          },
+        },
+      },
+    },
+
     async handler(req, reply) {
-      log.debug('get all forms')
+      log.debug('get all forms without fields')
       try {
         const forms = await prisma.form.findMany({
           select: { id: true, name: true },
@@ -75,7 +131,22 @@ async function formRoutes(app: FastifyInstance) {
     },
   })
 
-  app.post<{ Body: Omit<Form, 'id'>; Reply: IEntityId }>('/', {
+  app.post<{ Body: Omit<IForm, 'id'>; Reply: IEntityId }>('/', {
+    schema: {
+      description: 'Create a new form',
+      tags: ['form'],
+      body: Type.Omit(Form, ['id']),
+      response: {
+        200: {
+          type: 'object',
+          properties: {
+            statusCode: { type: 'number' },
+            message: { type: 'string' },
+            data: EntityId,
+          },
+        },
+      },
+    },
     async handler(req, reply) {
       const { fields, name } = req.body
       try {
@@ -93,7 +164,22 @@ async function formRoutes(app: FastifyInstance) {
     },
   })
 
-  app.put<{ Params: IEntityId; Body: Form; Reply: Form }>('/:id', {
+  app.put<{ Params: IEntityId; Body: IForm; Reply: IForm }>('/:id', {
+    schema: {
+      description: 'Update a form name or fields',
+      tags: ['form'],
+      body: Type.Omit(Form, ['id']),
+      response: {
+        200: {
+          type: 'object',
+          properties: {
+            statusCode: { type: 'number' },
+            message: { type: 'string' },
+            data: Form,
+          },
+        },
+      },
+    },
     async handler(req, reply) {
       const { id } = req.params
       const { name, fields } = req.body
@@ -120,8 +206,23 @@ async function formRoutes(app: FastifyInstance) {
 
   app.get<{
     Params: IEntityId
-    Reply: Omit<SourceRecord, 'formId'>[]
+    Reply: Omit<ISourceRecord, 'formId'>[]
   }>('/:id/source-records', {
+    schema: {
+      description: 'Gets the source records with data for a given form',
+      tags: ['form'],
+      params: EntityId,
+      response: {
+        200: {
+          type: 'object',
+          properties: {
+            statusCode: { type: 'number' },
+            message: { type: 'string' },
+            data: { type: 'array', items: SourceRecord },
+          },
+        },
+      },
+    },
     async handler(req, reply) {
       const { id } = req.params
       const sourceRecords = await prisma.sourceRecord.findMany({
