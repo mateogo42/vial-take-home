@@ -12,8 +12,8 @@ npm run seed
 This will populate the database with some seed data.
 - Go to `localhost:3000` in your browser to test the application.
 
-[!NOTE]
-If you edit any file on the repo you will immediately see the changes in your browser :D
+> [!NOTE]
+> If you edit any file on the repo you will immediately see the changes in your browser :D
 
 
 ## Demo
